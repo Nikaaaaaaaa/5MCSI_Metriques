@@ -26,6 +26,10 @@ def meteo():
         temp_day_value = list_element.get('main', {}).get('temp') - 273.15
         results.append({'Jour': dt_value, 'temp': round(temp_day_value, 2)})
     return jsonify(results=results)
+
+@app.route("/rapport/")
+def mongraphique():
+    return render_template("graphique.html")
   
 if __name__ == "__main__":
   app.run(debug=True)
