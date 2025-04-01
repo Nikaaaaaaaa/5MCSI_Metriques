@@ -6,6 +6,11 @@
   </head>
   <body>
     <h2 style="text-align:center;">Commits GitHub – Minute par minute</h2>
+
+    <!-- ✅ Zone du compteur -->
+    <p id="total_commits" style="text-align:center; font-weight: bold;"></p>
+
+    <!-- ✅ Zone du graphique -->
     <div id="chart_div" style="width: 90%; height: 500px; margin: auto;"></div>
 
     <script>
@@ -20,9 +25,16 @@
             dataTable.addColumn('string', 'Minute');
             dataTable.addColumn('number', 'Commits');
 
+            let total = 0;
+
             data.results.forEach(entry => {
               dataTable.addRow([entry.minute.toString().padStart(2, '0'), entry.commits]);
+              total += entry.commits;
             });
+
+            // ✅ Affichage du total
+            document.getElementById("total_commits").innerText =
+              "Total de commits : " + total;
 
             var options = {
               title: 'Nombre de commits par minute',
