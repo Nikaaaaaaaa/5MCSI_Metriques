@@ -5,12 +5,8 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   </head>
   <body>
-    <h2 style="text-align:center;">Commits GitHub – Minute par minute</h2>
-
-    <!-- ✅ Zone du compteur -->
+    <h2 style="text-align:center;">Commits GitHub – Date + heure</h2>
     <p id="total_commits" style="text-align:center; font-weight: bold;"></p>
-
-    <!-- ✅ Zone du graphique -->
     <div id="chart_div" style="width: 90%; height: 500px; margin: auto;"></div>
 
     <script>
@@ -21,29 +17,27 @@
         fetch('/commits/')
           .then(response => response.json())
           .then(data => {
-            var dataTable = new google.visualization.DataTable();
-            dataTable.addColumn('string', 'Minute');
+            const dataTable = new google.visualization.DataTable();
+            dataTable.addColumn('string', 'Date & Heure');
             dataTable.addColumn('number', 'Commits');
 
             let total = 0;
-
             data.results.forEach(entry => {
-              dataTable.addRow([entry.minute.toString().padStart(2, '0'), entry.commits]);
+              dataTable.addRow([entry.timestamp, entry.commits]);
               total += entry.commits;
             });
 
-            // ✅ Affichage du total
             document.getElementById("total_commits").innerText =
               "Total de commits : " + total;
 
-            var options = {
-              title: 'Nombre de commits par minute',
-              hAxis: { title: 'Minute de l\'heure' },
+            const options = {
+              title: 'Nombre de commits (avec date et heure)',
+              hAxis: { title: 'Date & Heure' },
               vAxis: { title: 'Commits' },
               legend: 'none'
             };
 
-            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            const chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
             chart.draw(dataTable, options);
           });
       }
