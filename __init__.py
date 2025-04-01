@@ -46,16 +46,19 @@ def commits():
     mon_email = "sebastien.lomellini@gmail.com"
 
     for commit in json_data:
-        author_info = commit["commit"]["author"]
-        date_str = author_info["date"]
-        email = author_info["email"]
+        author_info = commit.get("commit", {}).get("author", {})
+        email = author_info.get("email")
+        date_str = author_info.get("date")
 
-        if email != mon_email:
+        if email != mon_email or not date_str:
             continue
 
-        dt = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%SZ")
-        heure_minute = dt.strftime("%H:%M")
-        compteur[heure_minute] = compteur.get(heure_minute, 0) + 1
+        try:
+            dt = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%SZ")
+            heure_minute = dt.strftime("%H:%M")
+            compteur[heure_minute] = compteur.get(heure_minute, 0) + 1
+        except:
+            continue
 
     result = [{"minute": k, "commits": v} for k, v in sorted(compteur.items())]
     return jsonify(results=result)
