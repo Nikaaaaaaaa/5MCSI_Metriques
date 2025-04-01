@@ -43,15 +43,23 @@ def commits():
     json_data = json.loads(raw_data)
 
     compteur = {}
+    mon_email = "sebastien.lomellini@gmail.com"
 
     for commit in json_data:
-        date_str = commit["commit"]["author"]["date"]
+        author_info = commit["commit"]["author"]
+        date_str = author_info["date"]
+        email = author_info["email"]
+
+        if email != mon_email:
+            continue
+
         dt = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%SZ")
         heure_minute = dt.strftime("%H:%M")
         compteur[heure_minute] = compteur.get(heure_minute, 0) + 1
 
     result = [{"minute": k, "commits": v} for k, v in sorted(compteur.items())]
     return jsonify(results=result)
+
 
   
 @app.route('/commits-view/')
