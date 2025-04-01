@@ -4,6 +4,8 @@ from flask import json
 from datetime import datetime
 from urllib.request import urlopen
 import sqlite3
+import requests
+from collections import Counter
                                                                                                                                        
 app = Flask(__name__)
 
@@ -34,11 +36,6 @@ def mongraphique():
 @app.route("/histogramme/")
 def monhistogramme():
     return render_template("histogramme.html")
-
-import requests
-from collections import Counter
-from flask import jsonify
-from datetime import datetime
 
 @app.route('/commits/')
 def commits():
