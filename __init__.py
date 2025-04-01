@@ -51,6 +51,10 @@ def commits():
 
     result = [{"minute": k, "commits": v} for k, v in sorted(compteur.items())]
     return jsonify(results=result)
+  
+@app.route('/commits-view/')
+def commits_view():
+    return render_template("commits.html")
 
   
 if __name__ == "__main__":
