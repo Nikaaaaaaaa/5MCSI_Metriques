@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Graphique Commits</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  </head>
+  <body>
+    <h2 style="text-align:center;">Commits GitHub par minute</h2>
+    <div id="chart_div" style="width: 100%; height: 500px;"></div>
+
+    <script>
+      google.charts.load('current', { packages: ['corechart'] });
+      google.charts.setOnLoadCallback(() => {
+        fetch("/commits/")
+          .then(response => response.json())
+          .then(data => {
+            const tableau = new google.visualization.DataTable();
+            tableau.addColumn("string", "Minute");
+            tableau.addColumn("number", "Commits");
+
+            data.results.forEach(entry => {
+              tableau.addRow([entry.minute.toString(), entry.commits]);
+            });
+
+            const options = {
+              title: "Nombre de commits par minute",
+              hAxis: { title: "Minute" },
+              vAxis: { title: "Commits" },
+              legend: "none"
+            };
+
+            const chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
+            chart.draw(tableau, options);
+          });
+      });
+    </script>
+  </body>
+</html>
