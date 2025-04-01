@@ -1,30 +1,38 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Graphique Commits</title>
+    <title>Commits GitHub par minute</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   </head>
   <body>
     <h2 style="text-align:center;">Commits GitHub par minute</h2>
+    <p id="total_commits" style="text-align:center; font-weight: bold;"></p>
     <div id="chart_div" style="width: 100%; height: 500px;"></div>
 
     <script>
       google.charts.load('current', { packages: ['corechart'] });
-      google.charts.setOnLoadCallback(() => {
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
         fetch("/commits/")
           .then(response => response.json())
           .then(data => {
             const tableau = new google.visualization.DataTable();
-            tableau.addColumn("string", "Minute");
+            tableau.addColumn("string", "Heure:Minute");
             tableau.addColumn("number", "Commits");
 
+            let total = 0;
             data.results.forEach(entry => {
-              tableau.addRow([entry.minute.toString(), entry.commits]);
+              tableau.addRow([entry.minute, entry.commits]);
+              total += entry.commits;
             });
 
+            document.getElementById("total_commits").innerText =
+              "Total de commits personnels : " + total;
+
             const options = {
-              title: "Nombre de commits par minute",
-              hAxis: { title: "Minute" },
+              title: "Nombre de commits par minute (heure réelle)",
+              hAxis: { title: "Heure:Minute" },
               vAxis: { title: "Commits" },
               legend: "none"
             };
@@ -32,7 +40,7 @@
             const chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
             chart.draw(tableau, options);
           });
-      });
+      }
     </script>
   </body>
 </html>
