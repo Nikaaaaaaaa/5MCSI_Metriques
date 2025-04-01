@@ -1,11 +1,11 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Commits GitHub – Détail complet</title>
+    <title>Commits GitHub – par minute</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   </head>
   <body>
-    <h2 style="text-align:center;">Commits GitHub par auteur et date</h2>
+    <h2 style="text-align:center;">Commits par minute (toutes heures confondues)</h2>
     <p id="total_commits" style="text-align:center; font-weight: bold;"></p>
     <div id="chart_div" style="width: 100%; height: 500px;"></div>
 
@@ -18,7 +18,7 @@
           .then(response => response.json())
           .then(data => {
             const tableau = new google.visualization.DataTable();
-            tableau.addColumn("string", "Date (Auteur)");
+            tableau.addColumn("string", "Minute");
             tableau.addColumn("number", "Commits");
 
             let total = 0;
@@ -28,11 +28,11 @@
             });
 
             document.getElementById("total_commits").innerText =
-              "Nombre total de commits (tous auteurs) : " + total;
+              "Total de commits : " + total;
 
             const options = {
-              title: "Commits GitHub avec auteurs et date",
-              hAxis: { title: "Date + Auteur", slantedText: true, slantedTextAngle: 45 },
+              title: "Nombre de commits par minute (0 à 59)",
+              hAxis: { title: "Minute", slantedText: true },
               vAxis: { title: "Commits" },
               legend: "none"
             };
