@@ -46,13 +46,15 @@ def commits():
 
     for commit in json_data:
         date_str = commit["commit"]["author"]["date"]
-        name = commit["commit"]["author"]["name"]
-        dt = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%SZ")
-        label = dt.strftime(f"%Y-%m-%d %H:%M ({name})")
+        date_object = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%SZ")
+        minute = date_object.minute
+        label = str(minute).zfill(2)
         compteur[label] = compteur.get(label, 0) + 1
 
     result = [{"minute": k, "commits": v} for k, v in sorted(compteur.items())]
     return jsonify(results=result)
+
+
 
   
 @app.route('/commits-view/')
