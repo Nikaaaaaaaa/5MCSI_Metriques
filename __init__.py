@@ -45,7 +45,7 @@ def commits():
     except Exception as e:
         return jsonify({"error": str(e)})
 
-    mon_email = "sebastien.lomellini@gmail.com"
+    mon_email = "sebastien.lomellini1@gmail.com"
     compteur = {}
 
     for commit in json_data:
