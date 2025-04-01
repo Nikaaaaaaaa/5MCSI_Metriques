@@ -12,8 +12,8 @@ def hello_world():
     return render_template('hello.html')
 
 @app.route("/contact/")
-def MaPremiereAPI():
-    return "<h2>Ma page de contact</h2>"
+def page_contact():
+    return render_template("contact.html")
 
 @app.route('/tawarano/')
 def meteo():
