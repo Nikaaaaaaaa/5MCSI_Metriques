@@ -53,17 +53,19 @@ def commits():
             author = commit["commit"]["author"]
             email = author.get("email", "")
             if email != mon_email:
-                continue  # on saute les autres commits
+                continue
 
             date_str = author["date"]
             dt = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%SZ")
-            minute = dt.minute
-            compteur[minute] = compteur.get(minute, 0) + 1
+            timestamp = dt.strftime("%Y-%m-%d %H:%M")
+
+            compteur[timestamp] = compteur.get(timestamp, 0) + 1
         except:
             continue
 
-    results = [{"minute": str(k).zfill(2), "commits": v} for k, v in sorted(compteur.items())]
+    results = [{"timestamp": k, "commits": v} for k, v in sorted(compteur.items())]
     return jsonify(results=results)
+
   
 @app.route('/commits-view/')
 def commits_view():
