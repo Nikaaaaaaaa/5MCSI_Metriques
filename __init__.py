@@ -35,22 +35,29 @@ def mongraphique():
 def monhistogramme():
     return render_template("histogramme.html")
 
-@app.route("/commits/")
+import requests
+from collections import Counter
+from flask import jsonify
+from datetime import datetime
+
+@app.route('/commits/')
 def commits():
-    url = "https://api.github.com/repos/OpenRSI/5MCSI_Metriques/commits"
-    response = urlopen(url)
-    raw_data = response.read().decode("utf-8")
-    json_data = json.loads(raw_data)
+    url = 'https://api.github.com/repos/Nikaaaaaaaa/5MCSI_Metriques/commits'
+    response = requests.get(url)
+    commit_data = response.json()
 
-    compteur = {}
+    minute_counts = Counter()
 
-    for commit in json_data:
-        date_str = commit["commit"]["author"]["date"]
-        minute = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%SZ").minute
-        compteur[minute] = compteur.get(minute, 0) + 1
+    for commit in commit_data:
+        date_str = commit.get('commit', {}).get('author', {}).get('date')
+        if date_str:
+            dt = datetime.strptime(date_str, '%Y-%m-%dT%H:%M:%SZ')
+            minute = dt.minute
+            minute_counts[minute] += 1
 
-    result = [{"minute": k, "commits": v} for k, v in sorted(compteur.items())]
-    return jsonify(results=result)
+    results = [{'minute': m, 'commits': c} for m, c in sorted(minute_counts.items())]
+    return jsonify(results=results)
+
 
   
 @app.route('/commits-view/')
