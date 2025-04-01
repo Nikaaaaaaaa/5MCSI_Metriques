@@ -37,22 +37,28 @@ def mongraphique():
 def monhistogramme():
     return render_template("histogramme.html")
 
-@app.route('/commits/')
+@app.route("/commits/")
 def commits():
-    url = 'https://api.github.com/repos/Nikaaaaaaaa/5MCSI_Metriques/commits'
-    response = requests.get(url)
-    commit_data = response.json()
+    url = "https://api.github.com/repos/Nikaaaaaaaa/5MCSI_Metriques/commits"
+    try:
+        response = urlopen(url)
+        raw_data = response.read().decode("utf-8")
+        json_data = json.loads(raw_data)
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
-    minute_counts = Counter()
+    compteur = {}
 
-    for commit in commit_data:
-        date_str = commit.get('commit', {}).get('author', {}).get('date')
-        if date_str:
-            dt = datetime.strptime(date_str, '%Y-%m-%dT%H:%M:%SZ')
+    for commit in json_data:
+        try:
+            date_str = commit["commit"]["author"]["date"]
+            dt = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%SZ")
             minute = dt.minute
-            minute_counts[minute] += 1
+            compteur[minute] = compteur.get(minute, 0) + 1
+        except:
+            continue
 
-    results = [{'minute': m, 'commits': c} for m, c in sorted(minute_counts.items())]
+    results = [{"minute": str(k).zfill(2), "commits": v} for k, v in sorted(compteur.items())]
     return jsonify(results=results)
 
 
